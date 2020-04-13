@@ -12,7 +12,7 @@ import java.lang.String;
 public class OrderedLinkedListRQ implements Runqueue {
 
     /** Reference to head Process */
-    protected Proc pHead;
+    protected Node pHead;
     
     /** Length of List */
     protected int pLength;
@@ -28,14 +28,15 @@ public class OrderedLinkedListRQ implements Runqueue {
 
     @Override
     public void enqueue(String procLabel, int vt) {
-        Proc newProc = new Proc(procLabel, vt);
-    
-        if (pHead != null) {
-            newProc.setNext(pHead);
+        Node newNode = new Node(new Proc(procLabel, vt));
+        
+        if(pHead != null) {
+            newNode.setNext(pHead);
         }
-        pHead = newProc;
-    
+        pHead = newNode;
+        
         pLength++;
+        sortProcess();
     } // end of enqueue()
 
 
@@ -45,45 +46,43 @@ public class OrderedLinkedListRQ implements Runqueue {
             return "";
         }
         
+        Proc minValue = findMin(pHead);
+        Node currNode = pHead;
+        Node prevNode = null;
         
-        Proc currMin = findMin(pHead);
-        Proc currProc = pHead;
-        Proc prevProc = null;
-        
-        if(currProc == currMin) {
-            pHead = currProc.getNext();
-            currProc = null;
+        if(currNode.getValue().equals(minValue)){
+            pHead = currNode.getNext();
+            currNode = null;
             pLength--;
-            return currMin.getProcLabel();
+            return minValue.getProcLabel();
         }
         
-        prevProc = currProc;
-        currProc = currProc.getNext();
+        prevNode = currNode;
+        currNode = currNode.getNext();
         
-        while (currProc != null) {
-            if(currProc == currMin) {
-                prevProc.setNext(currProc.getNext());
-                currProc = null;
+        while(currNode != null) {
+            if(currNode.getValue() == minValue) {
+                prevNode.setNext(currNode.getNext());
+                currNode = null;
                 pLength--;
-                return currMin.getProcLabel();
+                return minValue.getProcLabel();
             }
-            
-            prevProc = currProc;
-            currProc = currProc.getNext();
+            prevNode = currNode;
+            currNode = currNode.getNext();
         }
-        
         return "";
     } // end of dequeue()
 
 
     @Override
     public boolean findProcess(String procLabel) {
-        Proc currProc = pHead;
+        Node currNode = pHead;
+        
         for(int i = 0; i < pLength; ++i) {
-            if(currProc.getProcLabel().equals(procLabel)){
+            if(currNode.getValue().getProcLabel().equals(procLabel)) {
                 return true;
             }
-            currProc = currProc.getNext();
+            currNode = currNode.getNext();
         }
         
         return false;
@@ -92,28 +91,27 @@ public class OrderedLinkedListRQ implements Runqueue {
 
     @Override
     public boolean removeProcess(String procLabel) {
-        Proc currProc = pHead;
-        Proc prevProc = null;
+        Node currNode = pHead;
+        Node prevNode = null;
         
-        if(currProc.getProcLabel().equals(procLabel)){
-            pHead = currProc.getNext();
-            currProc = null;
+        if(currNode.getValue().getProcLabel().equals(procLabel)) {
+            pHead = currNode.getNext();
+            currNode = null;
             pLength--;
             return true;
         }
+        prevNode = currNode;
+        currNode = currNode.getNext();
         
-        prevProc = currProc;
-        currProc = currProc.getNext();
-        
-        while(currProc != null) {
-            if(currProc.getProcLabel().equals(procLabel)){
-                prevProc.setNext(currProc.getNext());
-                currProc = null;
+        while(currNode != null) {
+            if(currNode.getValue().getProcLabel().equals(procLabel)) {
+                prevNode.setNext(currNode.getNext());
+                currNode = null;
                 pLength--;
                 return true;
             }
-            prevProc = currProc;
-            currProc = currProc.getNext();
+            prevNode = currNode;
+            currNode = currNode.getNext();
         }
         
         return false;
@@ -123,8 +121,20 @@ public class OrderedLinkedListRQ implements Runqueue {
     @Override
     public int precedingProcessTime(String procLabel) {
         // Implement me
+        Node currNode = pHead;
+        int time = 0;
+        print();
         
-        return -1; // placeholder, modify this
+        if(findProcess(procLabel)) {
+            while(!currNode.getValue().getProcLabel().equals(procLabel)) {
+                System.out.println(String.format("Current : %s", currNode.getValue().getProcLabel()));
+                time += currNode.getValue().getVt();
+                currNode = currNode.getNext();
+            }
+            return time;
+        } else {
+            return -1;
+        }
     } // end of precedingProcessTime()
 
 
@@ -139,22 +149,68 @@ public class OrderedLinkedListRQ implements Runqueue {
     @Override
     public void printAllProcesses(PrintWriter os) {
         //Implement me
-
-    } // end of printAllProcess()
-
-    /** Find the smallest vt from current node */
-    public Proc findMin(Proc head) {
-        Proc currMin  = head;
-        Proc currProc = head.getNext();
+        Node currNode = pHead;
     
-        while(currProc != null) {
-            if(currProc.getVt() <= currMin.getVt()) {
-                currMin = currProc;
-            }
-            currProc = currProc.getNext();
+        StringBuffer str = new StringBuffer();
+    
+        while(currNode != null) {
+            str.append(currNode.getValue().getProcLabel()+ " ");
+            currNode = currNode.getNext();
         }
         
+        os.println(str.toString());
+    } // end of printAllProcess()
+    
+    /** Sort Processes by Vruntime */
+    public void sortProcess() {
+        Node currNode = pHead;
+        Node index = null;
+        Proc temp;
+        
+        if(pHead == null) {
+            return;
+        } else {
+            while(currNode != null) {
+                index = currNode.getNext();
+                while(index != null) {
+                    if(currNode.getValue().getVt() > index.getValue().getVt()) {
+                        temp = currNode.getValue();
+                        currNode.setValue(index.getValue());
+                        index.setValue(temp);
+                    }
+                    index = index.getNext();
+                }
+                currNode = currNode.getNext();
+            }
+        }
+    }
+    
+    public Proc findMin(Node head) {
+        Proc currMin = head.getValue();
+        Node currNode = head.getNext();
+        
+        while (currNode != null) {
+            if(currNode.getValue().getVt() <= currMin.getVt()) {
+                currMin = currNode.getValue();
+            }
+            currNode = currNode.getNext();
+        }
         return currMin;
     }
     
+    public void print() {
+        System.out.println(toString());
+    }
+    
+    public String toString() {
+        Node currNode = pHead;
+    
+        StringBuffer str = new StringBuffer();
+    
+        while(currNode != null) {
+            str.append(currNode.getValue().getProcLabel()+ " ");
+            currNode = currNode.getNext();
+        }
+        return str.toString();
+    }
 } // end of class OrderedLinkedListRQ
