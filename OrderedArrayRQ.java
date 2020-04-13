@@ -15,9 +15,14 @@ public class OrderedArrayRQ implements Runqueue {
     /**
      * Constructs empty queue
      */
+    /** Head Process */
+    protected Proc pHead;
+    /** Length of array*/
+    protected int pLength;
+    
     public OrderedArrayRQ() {
         // Implement Me
-
+        
     }  // end of OrderedArrayRQ()
 
 
@@ -47,8 +52,12 @@ public class OrderedArrayRQ implements Runqueue {
     @Override
     public boolean removeProcess(String procLabel) {
         // Implement me
-
-        return false; // placeholder, modify this
+        
+        if(true) {
+            return true;
+        } else {
+            return false;
+        }
     } // end of removeProcess()
 
 

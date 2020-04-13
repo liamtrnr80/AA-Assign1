@@ -11,50 +11,119 @@ import java.lang.String;
  */
 public class OrderedLinkedListRQ implements Runqueue {
 
+    /** Reference to head Process */
+    protected Proc pHead;
+    
+    /** Length of List */
+    protected int pLength;
+    
     /**
      * Constructs empty linked list
      */
     public OrderedLinkedListRQ() {
-        // Implement me
-
+        pHead = null;
+        pLength = 0;
     }  // end of OrderedLinkedList()
 
 
     @Override
     public void enqueue(String procLabel, int vt) {
-        // Implement me
-
+        Proc newProc = new Proc(procLabel, vt);
+    
+        if (pHead != null) {
+            newProc.setNext(pHead);
+        }
+        pHead = newProc;
+    
+        pLength++;
     } // end of enqueue()
 
 
     @Override
     public String dequeue() {
-        // Implement me
-
-        return ""; // placeholder, modify this
+        if(pLength == 0) {
+            return "";
+        }
+        
+        
+        Proc currMin = findMin(pHead);
+        Proc currProc = pHead;
+        Proc prevProc = null;
+        
+        if(currProc == currMin) {
+            pHead = currProc.getNext();
+            currProc = null;
+            pLength--;
+            return currMin.getProcLabel();
+        }
+        
+        prevProc = currProc;
+        currProc = currProc.getNext();
+        
+        while (currProc != null) {
+            if(currProc == currMin) {
+                prevProc.setNext(currProc.getNext());
+                currProc = null;
+                pLength--;
+                return currMin.getProcLabel();
+            }
+            
+            prevProc = currProc;
+            currProc = currProc.getNext();
+        }
+        
+        return "";
     } // end of dequeue()
 
 
     @Override
     public boolean findProcess(String procLabel) {
-        // Implement me
-
-        return false; // placeholder, modify this
+        Proc currProc = pHead;
+        for(int i = 0; i < pLength; ++i) {
+            if(currProc.getProcLabel().equals(procLabel)){
+                return true;
+            }
+            currProc = currProc.getNext();
+        }
+        
+        return false;
     } // end of findProcess()
 
 
     @Override
     public boolean removeProcess(String procLabel) {
-        // Implement me
-
-        return false; // placeholder, modify this
+        Proc currProc = pHead;
+        Proc prevProc = null;
+        
+        if(currProc.getProcLabel().equals(procLabel)){
+            pHead = currProc.getNext();
+            currProc = null;
+            pLength--;
+            return true;
+        }
+        
+        prevProc = currProc;
+        currProc = currProc.getNext();
+        
+        while(currProc != null) {
+            if(currProc.getProcLabel().equals(procLabel)){
+                prevProc.setNext(currProc.getNext());
+                currProc = null;
+                pLength--;
+                return true;
+            }
+            prevProc = currProc;
+            currProc = currProc.getNext();
+        }
+        
+        return false;
     } // End of removeProcess()
 
 
     @Override
     public int precedingProcessTime(String procLabel) {
         // Implement me
-
+        
         return -1; // placeholder, modify this
     } // end of precedingProcessTime()
 
@@ -73,4 +142,19 @@ public class OrderedLinkedListRQ implements Runqueue {
 
     } // end of printAllProcess()
 
+    /** Find the smallest vt from current node */
+    public Proc findMin(Proc head) {
+        Proc currMin  = head;
+        Proc currProc = head.getNext();
+    
+        while(currProc != null) {
+            if(currProc.getVt() <= currMin.getVt()) {
+                currMin = currProc;
+            }
+            currProc = currProc.getNext();
+        }
+        
+        return currMin;
+    }
+    
 } // end of class OrderedLinkedListRQ
