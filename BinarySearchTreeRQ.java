@@ -39,12 +39,14 @@ public class BinarySearchTreeRQ implements Runqueue {
                 currNode = currNode.pLeftChild;
                 if(currNode == null) {
                     prevNode.pLeftChild = newNode;
+                    newNode.pParent = prevNode;
                     return;
                 }
             } else {
                 currNode = currNode.pRightChild;
                 if(currNode == null) {
                     prevNode.pRightChild = newNode;
+                    newNode.pParent = prevNode;
                     return;
                 }
             }
@@ -58,7 +60,6 @@ public class BinarySearchTreeRQ implements Runqueue {
         Proc minProc = min();
         
         if(removeNode(minProc)) {
-            System.out.println("Deleting : " + minProc.getProcLabel());
             return minProc.getProcLabel();
         } else {
             return "";
@@ -68,7 +69,6 @@ public class BinarySearchTreeRQ implements Runqueue {
 
     @Override
     public boolean findProcess(String procLabel) {
-        System.out.println("Finding");
         return search(pRoot, procLabel);
     } // end of findProcess()
 
@@ -77,8 +77,7 @@ public class BinarySearchTreeRQ implements Runqueue {
     public boolean removeProcess(String procLabel) {
         // Implement me
         if(findProcess(procLabel)) {
-            Proc delete = findNode(pRoot, procLabel);
-            System.out.println("Found Node : " + delete.getProcLabel());
+            Proc delete = findNode(pRoot, procLabel).pKey;
             return removeNode(delete);
         } else {
             return false;
@@ -89,8 +88,27 @@ public class BinarySearchTreeRQ implements Runqueue {
     @Override
     public int precedingProcessTime(String procLabel) {
         // Implement me
+        int time = 0;
+        BSTNode currNode = pRoot;
+        BSTNode index = null;
+        if(findProcess(procLabel)) {
+            index = findNode(pRoot, procLabel);
+            currNode = index.pParent;
+            
+            while (currNode != pRoot && currNode != null) {
+                time += currNode.pKey.getVt();
+                currNode = currNode.pParent;
+            }
+            
+            while(currNode != null) {
+                    time += currNode.pKey.getVt();
+                    currNode = currNode.pLeftChild;
+            }
 
-        return -1; // placeholder, modify this
+            return time;
+        } else {
+            return -1;
+        }
     } // end of precedingProcessTime()
 
 
@@ -98,9 +116,14 @@ public class BinarySearchTreeRQ implements Runqueue {
     public int succeedingProcessTime(String procLabel) {
         // Implement me
         int time = 0;
-        System.out.println("Time : " + findProcess(procLabel));
+        BSTNode currNode = null;
+        
         if(findProcess(procLabel)){
-            
+            currNode = findNode(pRoot, procLabel).pRightChild;
+            while(currNode != null) {
+                time += currNode.pKey.getVt();
+                currNode = currNode.pRightChild;
+            }
             return time;
         } else {
             return -1;
@@ -151,19 +174,20 @@ public class BinarySearchTreeRQ implements Runqueue {
     }
     
     protected boolean search(BSTNode root, String label) {
-        
-        
-        /**
-        if(root != null) {
-            if(root.pKey.getProcLabel().equals(label)) {
-                System.out.println("Found : " + label);
-                return true;
-            } else {
-                search(root.pLeftChild, label);
-                search(root.pRightChild, label);
-            }
+        if(root == null) {
+            return false;
         }
-        return false;*/
+        
+        if(root.pKey.getProcLabel().equals(label)) {
+            return true;
+        }
+        boolean resLeft = search(root.pLeftChild, label);
+        if(resLeft) {
+            return true;
+        }
+        boolean resRight = search(root.pRightChild, label);
+        
+        return resRight;
     }
     
     protected boolean removeNode(Proc delete) {
@@ -226,18 +250,25 @@ public class BinarySearchTreeRQ implements Runqueue {
         return true;
     }
     
-    protected Proc findNode(BSTNode root, String label) {
-        if(root != null) {
-            if(root.pKey.getProcLabel().equals(label)) {
-                System.out.println("Returning Node : " + root.pKey.getProcLabel());
-                return root.pKey;
-            } else {
-                findNode(root.pLeftChild, label);
-                findNode(root.pRightChild, label);
-            }
+    protected BSTNode findNode(BSTNode root, String label) {
+        if(root == null) {
+            return null;
         }
-        System.out.println("Didn't find Node : " + label);
-        return null;
+    
+        if(root.pKey.getProcLabel().equals(label)) {
+            return root;
+        }
+        BSTNode resLeft = findNode(root.pLeftChild, label);
+        if(resLeft != null) {
+            return resLeft;
+        }
+        BSTNode resRight = findNode(root.pRightChild, label);
+        
+        return resRight;
+    }
+    
+    public void asciiPrint() {
+        AsciiPrinter.printNode(pRoot);
     }
     
     public StringBuffer print(BSTNode root, StringBuffer str) {
@@ -255,9 +286,11 @@ class BSTNode {
     public Proc pKey;
     public BSTNode pLeftChild;
     public BSTNode pRightChild;
+    public BSTNode pParent;
     
     public BSTNode(Proc key) {
         pKey = key;
+        pParent = null;
         pLeftChild  = null;
         pRightChild = null;
     }
@@ -274,4 +307,7 @@ class BSTNode {
         return pRightChild;
     }
     
+    public BSTNode parent() {
+        return pParent;
+    }
 }
