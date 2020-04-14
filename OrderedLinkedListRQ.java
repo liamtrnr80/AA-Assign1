@@ -29,47 +29,53 @@ public class OrderedLinkedListRQ implements Runqueue {
     @Override
     public void enqueue(String procLabel, int vt) {
         Node newNode = new Node(new Proc(procLabel, vt));
-        
-        if(pHead != null) {
+    
+        if(pHead == null || pHead.getValue().getVt() >= newNode.getValue().getVt()) {
             newNode.setNext(pHead);
-        }
-        pHead = newNode;
+            pHead = newNode;
+        } else {
+            Node currNode = pHead;
         
+            while(currNode.getNext() != null && currNode.getNext().getValue().getVt() <= newNode.getValue().getVt()) {
+                currNode = currNode.getNext();
+            }
+            newNode.setNext(currNode.getNext());
+            currNode.setNext(newNode);
+        }
         pLength++;
-        sortProcess();
     } // end of enqueue()
 
 
     @Override
     public String dequeue() {
-        if(pLength == 0) {
+        if (pLength == 0) {
             return "";
         }
-        
-        Proc minValue = findMin(pHead);
+    
         Node currNode = pHead;
         Node prevNode = null;
-        
-        if(currNode.getValue().equals(minValue)){
+        Proc dequeue = findMin(pHead);
+    
+        if(currNode.getValue() == dequeue) {
             pHead = currNode.getNext();
             currNode = null;
             pLength--;
-            return minValue.getProcLabel();
+            return dequeue.getProcLabel();
         }
-        
+    
         prevNode = currNode;
         currNode = currNode.getNext();
-        
+    
         while(currNode != null) {
-            if(currNode.getValue() == minValue) {
+            if(currNode.getValue() == dequeue) {
                 prevNode.setNext(currNode.getNext());
                 currNode = null;
                 pLength--;
-                return minValue.getProcLabel();
+                return dequeue.getProcLabel();
             }
-            prevNode = currNode;
             currNode = currNode.getNext();
         }
+    
         return "";
     } // end of dequeue()
 
@@ -120,14 +126,11 @@ public class OrderedLinkedListRQ implements Runqueue {
 
     @Override
     public int precedingProcessTime(String procLabel) {
-        // Implement me
         Node currNode = pHead;
         int time = 0;
-        print();
         
         if(findProcess(procLabel)) {
             while(!currNode.getValue().getProcLabel().equals(procLabel)) {
-                System.out.println(String.format("Current : %s", currNode.getValue().getProcLabel()));
                 time += currNode.getValue().getVt();
                 currNode = currNode.getNext();
             }
@@ -140,15 +143,33 @@ public class OrderedLinkedListRQ implements Runqueue {
 
     @Override
     public int succeedingProcessTime(String procLabel) {
-        // Implement me
-
-        return -1; // placeholder, modify this
+        Node currNode = pHead;
+        int time = 0;
+        
+        if(findProcess(procLabel)) {
+            System.out.println("ST List : " + toString());
+            for(int i = 0; i < pLength; ++i) {
+                System.out.println(i);
+                if(currNode.getValue().getProcLabel().equals(procLabel)) {
+                    currNode = currNode.getNext();
+                    while(currNode != null) {
+                        time += currNode.getValue().getVt();
+                        currNode = currNode.getNext();
+                    }
+                    return time;
+                } else {
+                    currNode = currNode.getNext();
+                }
+            }
+            return time;
+        } else {
+            return -1;
+        }
     } // end of precedingProcessTime()
 
 
     @Override
     public void printAllProcesses(PrintWriter os) {
-        //Implement me
         Node currNode = pHead;
     
         StringBuffer str = new StringBuffer();
@@ -161,36 +182,13 @@ public class OrderedLinkedListRQ implements Runqueue {
         os.println(str.toString());
     } // end of printAllProcess()
     
-    /** Sort Processes by Vruntime */
-    public void sortProcess() {
-        Node currNode = pHead;
-        Node index = null;
-        Proc temp;
-        
-        if(pHead == null) {
-            return;
-        } else {
-            while(currNode != null) {
-                index = currNode.getNext();
-                while(index != null) {
-                    if(currNode.getValue().getVt() > index.getValue().getVt()) {
-                        temp = currNode.getValue();
-                        currNode.setValue(index.getValue());
-                        index.setValue(temp);
-                    }
-                    index = index.getNext();
-                }
-                currNode = currNode.getNext();
-            }
-        }
-    }
     
     public Proc findMin(Node head) {
         Proc currMin = head.getValue();
         Node currNode = head.getNext();
         
         while (currNode != null) {
-            if(currNode.getValue().getVt() <= currMin.getVt()) {
+            if(currNode.getValue().getVt() < currMin.getVt()) {
                 currMin = currNode.getValue();
             }
             currNode = currNode.getNext();
