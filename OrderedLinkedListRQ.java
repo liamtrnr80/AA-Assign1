@@ -29,14 +29,13 @@ public class OrderedLinkedListRQ implements Runqueue {
     @Override
     public void enqueue(String procLabel, int vt) {
         Node newNode = new Node(new Proc(procLabel, vt));
+        Node currNode = pHead;
     
-        if(pHead == null || pHead.getValue().getVt() >= newNode.getValue().getVt()) {
+        if(pHead == null || pHead.getValue().getVt() > vt) {
             newNode.setNext(pHead);
             pHead = newNode;
         } else {
-            Node currNode = pHead;
-        
-            while(currNode.getNext() != null && currNode.getNext().getValue().getVt() <= newNode.getValue().getVt()) {
+            while(currNode.getNext() != null && currNode.getNext().getValue().getVt() <= vt) {
                 currNode = currNode.getNext();
             }
             newNode.setNext(currNode.getNext());
