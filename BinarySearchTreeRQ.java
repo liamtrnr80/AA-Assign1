@@ -11,18 +11,24 @@ import java.lang.String;
  */
 public class BinarySearchTreeRQ implements Runqueue {
 
+    protected BSTNode pRoot;
+    
     /**
      * Constructs empty queue
      */
     public BinarySearchTreeRQ() {
-        // Implement Me
-
+        pRoot = null;
     }  // end of BinarySearchTreeRQ()
 
 
     @Override
     public void enqueue(String procLabel, int vt) {
         // Implement me
+        BSTNode newNode = new BSTNode(new Proc(procLabel, vt));
+        
+        if(pRoot == null) {
+            pRoot = newNode;
+        }
 
     } // end of enqueue()
 
@@ -74,3 +80,28 @@ public class BinarySearchTreeRQ implements Runqueue {
     } // end of printAllProcess()
 
 } // end of class BinarySearchTreeRQ
+
+class BSTNode {
+    public Proc pKey;
+    public Node pLeftChild;
+    public Node pRightChild;
+    
+    public BSTNode(Proc key) {
+        pKey = key;
+        pLeftChild  = null;
+        pRightChild = null;
+    }
+    
+    public Proc key(){
+        return pKey;
+    }
+    
+    public Node leftChild() {
+        return pLeftChild;
+    }
+    
+    public Node rightChild() {
+        return pRightChild;
+    }
+    
+}
