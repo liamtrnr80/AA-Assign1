@@ -22,13 +22,16 @@ public class OrderedArrayRQ implements Runqueue {
     
     public OrderedArrayRQ() {
         // Implement Me
-        
+        Proc[] processes = null;
     }  // end of OrderedArrayRQ()
 
 
     @Override
     public void enqueue(String procLabel, int vt) {
         // Implement me
+        Proc[] oldProcs = new Proc[pLength];
+        Proc[] newProcs = new Proc[pLength + 1];
+        
 
     } // end of enqueue()
 
@@ -84,3 +87,24 @@ public class OrderedArrayRQ implements Runqueue {
     } // end of printAllProcesses()
 
 } // end of class OrderedArrayRQ
+
+class DynamicArray {
+    
+    protected Proc array[];
+    protected int length;
+    protected int cap;
+    
+    public DynamicArray() {
+        array = new Proc[2];
+        length = 0;
+        cap = 2;
+    }
+    
+    public void add(Proc proc) {
+        
+        array[length] = proc;
+        length++;
+    }
+    
+    
+}
