@@ -146,9 +146,7 @@ public class OrderedLinkedListRQ implements Runqueue {
         int time = 0;
         
         if(findProcess(procLabel)) {
-            System.out.println("ST List : " + toString());
             for(int i = 0; i < pLength; ++i) {
-                System.out.println(i);
                 if(currNode.getValue().getProcLabel().equals(procLabel)) {
                     currNode = currNode.getNext();
                     while(currNode != null) {
@@ -178,6 +176,8 @@ public class OrderedLinkedListRQ implements Runqueue {
             currNode = currNode.getNext();
         }
         
+        str.setLength(str.length() - 1);
+        
         os.println(str.toString());
     } // end of printAllProcess()
     
@@ -195,9 +195,6 @@ public class OrderedLinkedListRQ implements Runqueue {
         return currMin;
     }
     
-    public void print() {
-        System.out.println(toString());
-    }
     
     public String toString() {
         Node currNode = pHead;
