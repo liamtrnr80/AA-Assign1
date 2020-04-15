@@ -100,6 +100,10 @@ public class OrderedArrayRQ implements Runqueue {
 
 } // end of class OrderedArrayRQ
 
+/**
+ * Code for DynamicArray was referenced/taken from:
+ * https://examples.javacodegeeks.com/dynamic-array-java-example/
+ */
 class DynamicArray {
     
     protected Proc[] array;
@@ -118,17 +122,6 @@ class DynamicArray {
         }
 
         array[length] = proc;
-        length++;
-    }
-
-    public void add(int index, Proc proc) {
-        if(length == cap) {
-            increaseCapacity(2);
-        }
-    
-        if (length - index >= 0)
-            System.arraycopy(array, index, array, index + 1, length - index);
-        array[index] = proc;
         length++;
     }
 
@@ -183,7 +176,8 @@ class DynamicArray {
     public void sortArray() {
         boolean swapped = false;
         int lengthRemain = length;
-
+        
+        // Code taken from labs
         do {
             swapped = false;
             for(int i = 0; i < lengthRemain - 1; i++) {
@@ -198,14 +192,6 @@ class DynamicArray {
             lengthRemain--;
 
         } while (swapped);
-    }
-
-    public int length(){
-        return length;
-    }
-
-    public int capacity() {
-        return cap;
     }
 
     public StringBuffer print() {

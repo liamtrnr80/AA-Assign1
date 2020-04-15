@@ -208,6 +208,7 @@ public class OrderedLinkedListRQ implements Runqueue {
     }
 } // end of class OrderedLinkedListRQ
 
+/* Reference from labs */
 class Node {
     
     protected Proc pValue;

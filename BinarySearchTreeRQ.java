@@ -284,6 +284,7 @@ public class BinarySearchTreeRQ implements Runqueue {
     }
 } // end of class BinarySearchTreeRQ
 
+/* Referenced from labs */
 class BSTNode {
     public Proc pKey;
     public BSTNode pLeftChild;
