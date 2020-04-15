@@ -103,8 +103,6 @@ public class BinarySearchTreeRQ implements Runqueue {
                     currNode = currNode.pLeftChild;
             }
             
-            return time;*
-            
             return time;
         } else {
             return -1;
