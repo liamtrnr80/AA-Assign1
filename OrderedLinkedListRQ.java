@@ -13,7 +13,6 @@ public class OrderedLinkedListRQ implements Runqueue {
 
     /** Reference to head Process */
     protected Node pHead;
-    
     /** Length of List */
     protected int pLength;
     
@@ -213,12 +212,10 @@ class Node {
     
     protected Proc pValue;
     protected Node pNext;
-    protected Node pPrev;
     
     public Node(Proc value) {
         pValue = value;
         pNext = null;
-        pPrev = null;
     }
     
     public Proc getValue() {
@@ -229,10 +226,6 @@ class Node {
         return pNext;
     }
     
-    public Node getPrev() {
-        return pPrev;
-    }
-    
     public void setValue(Proc value) {
         pValue = value;
     }
@@ -241,7 +234,4 @@ class Node {
         pNext = next;
     }
     
-    public void setPrev(Node prev) {
-        pPrev = prev;
-    }
 }

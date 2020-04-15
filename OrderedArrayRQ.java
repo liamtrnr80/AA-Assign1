@@ -29,7 +29,6 @@ public class OrderedArrayRQ implements Runqueue {
         array.add(newProc);
 
         array.sortArray();
-        System.out.println(array.print());
     } // end of enqueue()
 
 
@@ -53,8 +52,6 @@ public class OrderedArrayRQ implements Runqueue {
 
     @Override
     public boolean removeProcess(String procLabel) {
-        // Implement me
-
         if(findProcess(procLabel)) {
             array.remove(array.find(procLabel));
             return true;
@@ -94,8 +91,7 @@ public class OrderedArrayRQ implements Runqueue {
 
     @Override
     public void printAllProcesses(PrintWriter os) {
-        StringBuffer str = new StringBuffer();
-        str = array.print();
+        StringBuffer str = array.print();
 
         str.setLength(str.length() - 1);
 
@@ -106,7 +102,7 @@ public class OrderedArrayRQ implements Runqueue {
 
 class DynamicArray {
     
-    protected Proc array[];
+    protected Proc[] array;
     protected int length;
     protected int cap;
     
@@ -129,10 +125,9 @@ class DynamicArray {
         if(length == cap) {
             increaseCapacity(2);
         }
-
-        for(int i = length - 1; i >= index; i--) {
-            array[i + 1] = array[i];
-        }
+    
+        if (length - index >= 0)
+            System.arraycopy(array, index, array, index + 1, length - index);
         array[index] = proc;
         length++;
     }

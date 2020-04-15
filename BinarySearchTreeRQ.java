@@ -75,7 +75,6 @@ public class BinarySearchTreeRQ implements Runqueue {
 
     @Override
     public boolean removeProcess(String procLabel) {
-        // Implement me
         if(findProcess(procLabel)) {
             Proc delete = findNode(pRoot, procLabel).pKey;
             return removeNode(delete);
@@ -87,7 +86,6 @@ public class BinarySearchTreeRQ implements Runqueue {
 
     @Override
     public int precedingProcessTime(String procLabel) {
-        // Implement me
         int time = 0;
         BSTNode currNode = pRoot;
         BSTNode index = null;
@@ -114,7 +112,6 @@ public class BinarySearchTreeRQ implements Runqueue {
 
     @Override
     public int succeedingProcessTime(String procLabel) {
-        // Implement me
         int time = 0;
         BSTNode currNode = null;
         
@@ -266,11 +263,7 @@ public class BinarySearchTreeRQ implements Runqueue {
         
         return resRight;
     }
-    
-    public void asciiPrint() {
-        AsciiPrinter.printNode(pRoot);
-    }
-    
+
     public StringBuffer print(BSTNode root, StringBuffer str) {
         if(root != null) {
             print(root.pLeftChild, str);
