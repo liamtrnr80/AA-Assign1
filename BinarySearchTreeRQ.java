@@ -89,11 +89,11 @@ public class BinarySearchTreeRQ implements Runqueue {
         int time = 0;
         BSTNode currNode = pRoot;
         BSTNode index = null;
+        
         if(findProcess(procLabel)) {
             index = findNode(pRoot, procLabel);
-            currNode = index.pParent;
             
-            while (currNode != pRoot && currNode != null) {
+           while (currNode != pRoot && currNode != null) {
                 time += currNode.pKey.getVt();
                 currNode = currNode.pParent;
             }
@@ -102,13 +102,14 @@ public class BinarySearchTreeRQ implements Runqueue {
                     time += currNode.pKey.getVt();
                     currNode = currNode.pLeftChild;
             }
-
+            
+            return time;*
+            
             return time;
         } else {
             return -1;
         }
     } // end of precedingProcessTime()
-
 
     @Override
     public int succeedingProcessTime(String procLabel) {
@@ -126,7 +127,6 @@ public class BinarySearchTreeRQ implements Runqueue {
             return -1;
         }
     } // end of precedingProcessTime()
-
 
     @Override
     public void printAllProcesses(PrintWriter os) {
@@ -264,6 +264,17 @@ public class BinarySearchTreeRQ implements Runqueue {
         return resRight;
     }
 
+    /** Trying to traverse BST until reaching index, however time does not increase
+    public Integer findPreceeding(BSTNode root, BSTNode index, Integer time) {
+        if(root != null && root != index) {
+            time += root.pKey.getVt();
+            findPreceeding(root.pLeftChild, index, time);
+            System.out.println(String.format("Adding %s with value %d", root.pKey.getProcLabel(), root.pKey.getVt()));
+            findPreceeding(root.pRightChild, index, time);
+        }
+        return time;
+    }*/
+    
     public StringBuffer print(BSTNode root, StringBuffer str) {
         if(root != null) {
             print(root.pLeftChild, str);
